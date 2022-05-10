@@ -1,0 +1,11 @@
+[
+    {
+        "id":"mulika",
+        "name": "Mulika",
+        "url": "https://meliora.co.ke/#/products/mulika",
+        "elevatorPitch": "Mulika is a monitoring platform that continuously records a set of metrics that measure system performance to provide a Visualization Dashboard for users to easily identify when their services experience failures or success.",
+        "owner": "Meliora",
+        "ownerUrl": "https://meliora.co.ke",
+        "iconUrl":"https://meliora.co.ke/assets/images/mulika/mulika.svg"
+    }
+]

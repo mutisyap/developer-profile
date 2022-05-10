@@ -1,0 +1,26 @@
+<div class="container mx-auto w-11/12 md:w-full md:px-4">
+    <div class="flex flex-wrap items-center gap-2 mt-5">
+        <div class="p-2">
+            <img class="rounded-l-md object-cover h-12" [src]="currentLesson.image">
+        </div>
+
+        <div class="p-2">
+            <h3 class="text-2xl font-semibold">{{currentLesson.title}}</h3>
+        </div>
+    </div>
+
+    <p class="text-xl pl-1">{{currentLesson.description}}</p>
+
+
+    <div class="mt-2 border rounded-t-md" >
+        <h1 class="bg-slate-100 px-5 underline-offset-1">Table of Contents</h1>
+        <ol class="list-decimal px-5 py-2 list-inside">
+            <li class="text-xl hover:text-blue-700 hover:underline"
+                *ngFor="let section of currentLesson.contents">
+                <a class="no-underline" [href]="section.link">{{section.title}}</a>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<!-- {{currentLesson.image}} -->

@@ -1,0 +1,21 @@
+FROM node:16.14.2-slim
+
+COPY dist/petro dist/petro
+
+CMD ["node", "dist/petro/server/main.js"]
+
+# npm run build 
+#  or 
+# ng build && ng run petro:server
+
+
+EXPOSE 4000
+
+# Build: docker build -t pmutisya/profile-ssr:latest -f ./Dockerfile-ssr .
+
+# PUSH: docker push pmutisya/profile-ssr:latest
+
+# docker run pmutisya/profile-ssr:latest
+
+# npm run build:ssr &&  docker build -t pmutisya/profile-ssr:latest -f ./Dockerfile-ssr . && docker push pmutisya/profile-ssr
+# kubectl scale deployment/profile-ssr --replicas=0 -n=petro && kubectl scale deployment/profile-ssr --replicas=1 -n=petro

@@ -1,0 +1,19 @@
+<div class="container mx-auto md:px-4 md:w-8/12 w-11/12" *ngIf="article">
+    <h1 class="text-2xl font-medium py-2 mt-3 underline underline-offset-4">{{article.title}}</h1>
+
+
+
+    <!-- <p class="text-slate-600 my-3">{{article.brief}}</p> -->
+
+    <!-- <hr> -->
+
+    <div class=" text-slate-800 blog" [innerHTML]="article.articleHTML | sanitizeHtml"></div>
+
+    <label class="text-slate-700 mb-5 pb-6">Author: {{article.author}}</label>
+</div>
+
+<div class="container mx-auto md:px-4 md:w-8/12 mt-10 py-5 bg-red-200 text-center rounded-lg" *ngIf="!article && !isLoading">
+    <p class="text-lg ">Error reading blog. It's an error on our side. Please try again after a while.
+    </p>
+    <a class="" href="/">Go Home</a>
+</div>

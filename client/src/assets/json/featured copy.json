@@ -1,0 +1,44 @@
+[
+    {
+        "title": "Natujenge",
+        "icon": "https://natujenge.ke/assets/images/logo-wordmark.svg",
+        "showText": false,
+        "description": "A platform for people to share their knowledge and experience with each other.",
+        "link": "https://natujenge.ke/",
+        "callToAction": "Join us",
+        "imageSrc": ".../../../assets/love-the-bytes.png",
+        "callToActionLinks": [
+            {
+                "text": "Follow",
+                "icon": "../assets/images/youtube-brands.svg",
+                "link": "https://www.youtube.com/channel/UCJyqTEptQMHh5qo23GpKpQw"
+            },
+            {
+                "text": "Join Us",
+                "icon": "../assets/images/whatsapp-brands.svg",
+                "link": "https://www.youtube.com/channel/UCJyqTEptQMHh5qo23GpKpQw"
+            }
+        ]
+    },
+    {
+        "title": "Xtrabackup",
+        "icon": "https://www.percona.com/sites/default/files/logo_0_1.png",
+        "showText": false,
+        "description": "Move from using code or executables as your unit of distribution to using container images. Docker is a containerization engine that provides a simple, unified approach to building, deploying, and managing software containers.",
+        "link": "https://natujenge.ke/",
+        "callToAction": "Join us",
+        "imageSrc": "https://devopedia.org/images/article/101/8323.1565281088.png",
+        "callToActionLinks": [
+            {
+                "text": "Follow",
+                "icon": "../assets/images/youtube-brands.svg",
+                "link": "https://www.youtube.com/channel/UCJyqTEptQMHh5qo23GpKpQw"
+            },
+            {
+                "text": "Join Us",
+                "icon": "../assets/images/whatsapp-brands.svg",
+                "link": "https://www.youtube.com/channel/UCJyqTEptQMHh5qo23GpKpQw"
+            }
+        ]
+    }
+]

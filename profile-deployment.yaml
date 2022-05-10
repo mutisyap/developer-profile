@@ -1,0 +1,489 @@
+# namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: petro
+  labels:
+    name: safariway
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile-ssr
+  namespace: petro
+  labels:
+    app: profile-ssr
+spec:
+  type: NodePort
+  ports:
+    - port: 4000
+      targetPort: 4000
+      protocol: TCP
+      nodePort: 30182
+  selector:
+    app: profile-ssr
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile-ssr
+  namespace: petro
+  labels:
+    app: profile-ssr
+spec:
+  selector:
+    matchLabels:
+      app: profile-ssr
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: profile-ssr
+    spec:
+      restartPolicy: Always
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: profilefiles
+      containers:
+        - name: petro-profile-ssr
+          image: pmutisya/profile-ssr
+          env:
+            - name: TZ
+              value: Africa/Nairobi
+          ports:
+            - containerPort: 4000
+              protocol: TCP
+          volumeMounts:
+              - name: uploads
+                mountPath: /dist/petro/assets/images/uploads
+                subPath: uploads
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile
+  namespace: petro
+  labels:
+    app: profile
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      nodePort: 30180
+  selector:
+    app: profile
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile
+  namespace: petro
+  labels:
+    app: profile
+spec:
+  selector:
+    matchLabels:
+      app: profile
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: profile
+    spec:
+      restartPolicy: Always
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: profilefiles
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+              - key: mime.types
+                path: mime.types
+      containers:
+        - name: petro-profile
+          image: pmutisya/profile
+          env:
+            - name: TZ
+              value: Africa/Nairobi
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: uploads
+              mountPath: /usr/share/nginx/html/uploads
+              subPath: uploads
+            - name: nginx-conf
+              mountPath: /etc/nginx
+          # resources:
+          #   requests:
+          #     cpu: 10m
+          #     memory: 10Mi
+          #   limits:
+          #     cpu: 5m
+          #     memory: 1Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile-app
+  namespace: petro
+  labels:
+    app: profile-app
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      nodePort: 30181
+  selector:
+    app: profile-app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile-app
+  namespace: petro
+  labels:
+    app: profile-app
+spec:
+  selector:
+    matchLabels:
+      app: profile-app
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: profile-app
+    spec:
+      restartPolicy: Always
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: profilefiles
+      containers:
+        - name: petro-app
+          image: pmutisya/profile-server:1.0.0
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://profile-mysql:3306/profile?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: '@SimplePWD1'
+            - name: LOGGING_LEVEL_ROOT
+              value: DEBUG
+            - name: TZ
+              value: Africa/Nairobi
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: uploads
+              mountPath: /apps/media
+              subPath: uploads
+          # resources:
+          #   requests:
+          #     cpu: 10m
+          #     memory: 10Mi
+          #   limits:
+          #     cpu: 5m
+          #     memory: 1Mi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+  namespace: petro
+data:
+  nginx.conf: |
+    events {}
+
+    http {
+        include mime.types;
+
+        server {
+            root /usr/share/nginx/html;
+            index index.html;
+
+            listen 80;
+            # Serving the website
+            location / {
+                try_files $uri $uri/ /index.html;
+            }
+        }
+    }     
+  mime.types: |
+    types {
+        text/html                                        html htm shtml;
+        text/css                                         css;
+        text/xml                                         xml;
+        image/gif                                        gif;
+        image/jpeg                                       jpeg jpg;
+        application/javascript                           js;
+        application/atom+xml                             atom;
+        application/rss+xml                              rss;
+
+        text/mathml                                      mml;
+        text/plain                                       txt;
+        text/vnd.sun.j2me.app-descriptor                 jad;
+        text/vnd.wap.wml                                 wml;
+        text/x-component                                 htc;
+
+        image/avif                                       avif;
+        image/png                                        png;
+        image/svg+xml                                    svg svgz;
+        image/tiff                                       tif tiff;
+        image/vnd.wap.wbmp                               wbmp;
+        image/webp                                       webp;
+        image/x-icon                                     ico;
+        image/x-jng                                      jng;
+        image/x-ms-bmp                                   bmp;
+
+        font/woff                                        woff;
+        font/woff2                                       woff2;
+
+        application/java-archive                         jar war ear;
+        application/json                                 json;
+        application/mac-binhex40                         hqx;
+        application/msword                               doc;
+        application/pdf                                  pdf;
+        application/postscript                           ps eps ai;
+        application/rtf                                  rtf;
+        application/vnd.apple.mpegurl                    m3u8;
+        application/vnd.google-earth.kml+xml             kml;
+        application/vnd.google-earth.kmz                 kmz;
+        application/vnd.ms-excel                         xls;
+        application/vnd.ms-fontobject                    eot;
+        application/vnd.ms-powerpoint                    ppt;
+        application/vnd.oasis.opendocument.graphics      odg;
+        application/vnd.oasis.opendocument.presentation  odp;
+        application/vnd.oasis.opendocument.spreadsheet   ods;
+        application/vnd.oasis.opendocument.text          odt;
+        application/vnd.openxmlformats-officedocument.presentationml.presentation
+                                                         pptx;
+        application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                                                         xlsx;
+        application/vnd.openxmlformats-officedocument.wordprocessingml.document
+                                                         docx;
+        application/vnd.wap.wmlc                         wmlc;
+        application/wasm                                 wasm;
+        application/x-7z-compressed                      7z;
+        application/x-cocoa                              cco;
+        application/x-java-archive-diff                  jardiff;
+        application/x-java-jnlp-file                     jnlp;
+        application/x-makeself                           run;
+        application/x-perl                               pl pm;
+        application/x-pilot                              prc pdb;
+        application/x-rar-compressed                     rar;
+        application/x-redhat-package-manager             rpm;
+        application/x-sea                                sea;
+        application/x-shockwave-flash                    swf;
+        application/x-stuffit                            sit;
+        application/x-tcl                                tcl tk;
+        application/x-x509-ca-cert                       der pem crt;
+        application/x-xpinstall                          xpi;
+        application/xhtml+xml                            xhtml;
+        application/xspf+xml                             xspf;
+        application/zip                                  zip;
+
+        application/octet-stream                         bin exe dll;
+        application/octet-stream                         deb;
+        application/octet-stream                         dmg;
+        application/octet-stream                         iso img;
+        application/octet-stream                         msi msp msm;
+
+        audio/midi                                       mid midi kar;
+        audio/mpeg                                       mp3;
+        audio/ogg                                        ogg;
+        audio/x-m4a                                      m4a;
+        audio/x-realaudio                                ra;
+
+        video/3gpp                                       3gpp 3gp;
+        video/mp2t                                       ts;
+        video/mp4                                        mp4;
+        video/mpeg                                       mpeg mpg;
+        video/quicktime                                  mov;
+        video/webm                                       webm;
+        video/x-flv                                      flv;
+        video/x-m4v                                      m4v;
+        video/x-mng                                      mng;
+        video/x-ms-asf                                   asx asf;
+        video/x-ms-wmv                                   wmv;
+        video/x-msvideo                                  avi;
+    }
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pmutisya
+  namespace: petro
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+
+spec:
+  tls:
+    - hosts:
+        - pmutisya.com
+        - www.pmutisya.com
+      secretName: pmutisya-ssl
+  ingressClassName: nginx
+  rules:
+    - host: pmutisya.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: profile-ssr
+                port:
+                  number: 4000
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: profile-app
+                port:
+                  number: 8080
+          - path: /uploads
+            pathType: Prefix
+            backend:
+              service:
+                name: profile
+                port:
+                  number: 80
+    - host: www.pmutisya.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: profile-ssr
+                port:
+                  number: 4000
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: profile-app
+                port:
+                  number: 8080
+          - path: /uploads
+            pathType: Prefix
+            backend:
+              service:
+                name: profile
+                port:
+                  number: 80
+# microk8s.kubectl apply -f compose/website-kubernetes.yaml
+# microk8s.kubectl cp php/ default/profile:/usr/share/nginx/html/ -c php-fpm
+# microk8s.kubectl cp uploads/ default/profile:/usr/share/nginx/html -c meliora-website
+
+# kubectl scale deployment/profile --replicas=n
+
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: profile
+  namespace: petro
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+
+spec:
+  tls:
+    - hosts:
+        - eulu.co.ke
+        - eulu.co.ke
+        - petro.eulu.co.ke
+      secretName: petro-ssl
+  ingressClassName: nginx
+  rules:
+    - host: eulu.co.ke
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: profile-ssr
+                port:
+                  number: 4000
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: profile-app
+                port:
+                  number: 8080
+          - path: /uploads
+            pathType: Prefix
+            backend:
+              service:
+                name: profile
+                port:
+                  number: 80
+    - host: www.eulu.co.ke
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: profile-ssr
+                port:
+                  number: 4000
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: profile-app
+                port:
+                  number: 8080
+          - path: /uploads
+            pathType: Prefix
+            backend:
+              service:
+                name: profile
+                port:
+                  number: 80
+    - host: petro.eulu.co.ke
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: profile
+                port:
+                  number: 80
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: profile-app
+                port:
+                  number: 8080
+# microk8s.kubectl apply -f compose/website-kubernetes.yaml
+# microk8s.kubectl cp php/ default/profile:/usr/share/nginx/html/ -c php-fpm
+# microk8s.kubectl cp uploads/ default/profile:/usr/share/nginx/html -c meliora-website
+
+# kubectl scale deployment/profile --replicas=n

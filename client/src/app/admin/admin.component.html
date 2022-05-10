@@ -1,0 +1,160 @@
+<div class="container blogs mx-auto md:px-4 my-5 home">
+    <div *ngIf="adminAction == 'write'">
+        <h1 class="text-xl font-semibold border-b-2 py-4">Write Article
+
+            <button type="button" (click)="previewArticle()"
+                class="text-orange-700 bg-slate-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <span *ngIf="!previewMode">Preview Article</span> <span *ngIf="previewMode">Edit Article</span>
+            </button>
+
+            <button type="button" (click)="adminAction = 'manage'"
+                class="text-blue-700 float-right bg-slate-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Manage Articles
+            </button>
+
+            <button type="button" (click)="toggleModal()"
+                class="text-blue-700 float-right mr-2 bg-slate-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Upload Image
+            </button>
+        </h1>
+        <form *ngIf="!previewMode" name="articleForm" [formGroup]="articleForm" (ngSubmit)="saveArticle()">
+
+            <div class="my-3">
+                <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Title (Keep
+                    it
+                    under 100 characters)</label>
+                <input type="text" id="title" name="title" formControlName="title"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+            </div>
+
+            <div class="my-3">
+                <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Preview Image
+                    URL (Keep
+                    it under 300 KB. Whatsapp doesn't show images above 300KB. Also feel free to upload above)</label>
+                <input type="text" id="title" name="metaImageURL" formControlName="metaImageURL"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="https://eulu.co.ke/uploads/1d1dc999af144cc3bb5d6f2f5c363149.jpeg"
+                    required>
+            </div>
+
+            <div class="my-3">
+                <label for="brief" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Article Brief
+                    (Plaintext)</label>
+                <textarea id="brief" name="brief" formControlName="brief"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    required></textarea>
+            </div>
+
+            <div class="my-3">
+                <label for="article" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Article
+                    (Please
+                    Use Markdown)</label>
+                <small>To use an image, please upload it as shown and then add it using markdown syntax</small>
+                <textarea id="article" rows="20" name="article" formControlName="article"
+                    class="whitespace-pre-line whitespace-pre-wrap bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="#title" required></textarea>
+            </div>
+
+            <div class="mb-6">
+                <label for="author" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Author (Your
+                    Name)</label>
+                <input type="text" id="author" name="author" formControlName="author"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Peter Mutisya" required>
+            </div>
+
+            <div class="block">
+                <button type="button"
+                    class="text-orange-700 bg-slate-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Preview
+                    Article</button>
+            </div>
+
+            <div class="mt-2">
+                <button type="submit"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Post
+                    Your Article</button>
+            </div>
+
+        </form>
+
+        <div class="w-8/12" *ngIf="previewMode">
+            <div class="hidden">
+                <h1 class="text-xl font-semibold my-2">{{article.title}}</h1>
+
+                <p class="text-slate-500 my-3">{{article.brief}}</p>
+            </div>
+
+            <div [innerHTML]="article.articleHTML | sanitizeHtml"></div>
+
+        </div>
+    </div>
+
+    <div *ngIf="adminAction == 'manage'">
+        <h1 class="text-xl font-semibold border-b-2 py-4">Manage Articles
+            <button type="button" (click)="adminAction = 'write'"
+                class="text-orange-700 float-right bg-slate-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Write Article
+            </button>
+        </h1>
+
+        <div class=" mt-5">
+            <div class="py-2 " *ngFor="let blog of blogs">
+                <div [routerLink]="['/blogs', blog.id]" class="cursor-pointer">
+                    <h1 class="text-blue-700 text-lg font-semibold">#{{blog.id}}. {{blog.title}}</h1>
+                    <p class="text-slate-700 text-sm">{{blog.brief}}</p>
+                    <small class="text-slate-600">Author: {{blog.author}}</small>
+                    <small><strong class="mx-3 text-slate-700">Status: {{blog.status}}</strong></small>
+                    <small class="text-slate-500 px-3">{{blog.duration}} read</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showModal"
+    class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
+    <div class="relative w-auto my-6 mx-auto max-w-6xl">
+        <!--content-->
+        <div
+            class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            <!--header-->
+            <div class="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+                <h3 class="text-3xl font-semibold">
+                    Upload Image
+                </h3>
+                <button
+                    class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button" (click)="toggleModal()">
+                    Close
+                </button>
+            </div>
+            <!--body-->
+            <div class="relative p-6 flex-auto">
+                <div class="form-group">
+                    <label for="thumbnail">Upload Image file &nbsp;&nbsp;</label>
+                    <input type="file" accept="image/*" class="form-control mb-2" #inputFile
+                        (change)="addResourceFile($event)" id="uploadResources" name="resourceFiles">
+
+                    <p *ngIf="resourcesErrorMessage.error" class="bg-red-200 py-1 px-2 rounded-md">
+                        {{resourcesErrorMessage.error}}</p>
+                    <p *ngIf="resourcesErrorMessage.success" class="bg-green-200 py-1 px-2 rounded-md">
+                        {{resourcesErrorMessage.success}}</p>
+                </div>
+            </div>
+            <!--footer-->
+            <div class="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                <button
+                    class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button" (click)="toggleModal()">
+                    Close
+                </button>
+                <button [disabled]="!resourcesErrorMessage.success"
+                    class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button" (click)="toggleModal()">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="showModal" class="opacity-25 fixed inset-0 z-40 bg-black"></div>

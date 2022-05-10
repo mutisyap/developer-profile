@@ -1,0 +1,228 @@
+<div class="container mx-auto w-11/12 md:w-full md:px-4 home">
+    <div class="flex flex-wrap items-start md:mt-5 justify-between">
+        <div class="md:w-4/12 hidden md:block border border-gray-100 rounded-sm">
+            <!-- <div class="relative flex flex-col min-w-0 break-words border-0 bg-white border-1 border-gray-300 profile-card">
+                </div> -->
+            <div class="flex space-x-2 items-center justify-between border-b-2">
+                <div class="flex space-x-2 items-center">
+                    <div class="w-12 h-12 m-2">
+                        <img [src]="about.profileImage" alt="Peter Mutisya"
+                            class="rounded-full border border-gray-100 shadow-sm">
+                    </div>
+                    <div class="block">
+                        <h1 class="text-xl font-bold">{{about.profileName}}</h1>
+                        <h5 class="text-slate-500 text-xs">Software Engineer</h5>
+                    </div>
+                </div>
+                <div class="px-2">
+                    <span class="float-right bg-blue-400 text-white px-2 py-1 rounded-full hidden xl:block">
+                        Meliora Technologies
+                    </span>
+                    <span class="float-right bg-blue-400 text-white px-2 py-1 rounded-full hidden lg:block xl:hidden">
+                        Meliora
+                    </span>
+                </div>
+            </div>
+            <h2 class="p-2 text-xl font-medium border-b border-b-slate-100">Let's learn together</h2>
+            <ul>
+                <li class="p-2 flex items-center gap-2 border-b border-b-slate-50" *ngFor="let featuredTech of learn">
+                    <img [src]="featuredTech.image" alt="" class="h-8 w-8 max-w-10 object-center rounded-full">
+                    <div class="block">
+                        <a [routerLink]="['/learn', featuredTech.title.toLowerCase()]" class="font-bold text-blue-700  hover:underline">{{featuredTech.title}}</a>
+                        <div><small class="text-slate-600">{{featuredTech.description}}</small></div>
+                        <h5 class="text-xs cursor-pointer underline" *ngIf="featuredTech.contents"
+                            (click)="featuredTech.showContents = !featuredTech.showContents">Contents
+                            <small class="text-slate-500 text-xs pl-2" *ngIf="!featuredTech.showContents">(click to
+                                show)</small>
+                            <small class="text-slate-500 text-xs pl-2" *ngIf="featuredTech.showContents">(click to
+                                hide)</small>
+                        </h5>
+                        <ul class="list-disc ml-5 list-outside" *ngIf="featuredTech.showContents">
+                            <li class="text-xs hover:text-blue-700 hover:underline"
+                                *ngFor="let section of featuredTech.contents">
+                                <a [href]="section.link">{{section.title}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="md:w-7/12 sm:block">
+            <!-- <h2 class="text-2xl text-center text-indigo-800  bg-gray-50 py-3">Featured</h2> -->
+            <div class="" *ngFor="let featuredItem of featuredItems.slice(0,2); let i = index">
+
+                <div class="flex gap-3 md:items-end md:mt-5 mt-2 rounded-md border border-red-1 bg-slate-50">
+
+                    <div class="w-4/12">
+                        <img class="rounded-l-md object-cover h-full" [src]="featuredItem.imageSrc">
+                    </div>
+
+                    <div class="w-8/12 p-2">
+
+                        <h2 class="text-base font-semibold px-0 py-0">{{featuredItem.title}}
+                            <span
+                                class="text-xs float-right text-blue-700 bg-gray-200 px-2 py-0.5 rounded-full font-normal">
+                                Featured
+                            </span>
+                        </h2>
+
+                        <hr>
+
+                        <p class="text-sm text-slate-700 md:mt-2 pt-0">{{featuredItem.description}}</p>
+
+
+                        <div class="text-blue-700 mt-0 flex flex-wrap justify-between hover:underline">
+                            <a *ngFor="let callToAction of featuredItem.callToActionLinks" href="{{callToAction.link}}"
+                                class="">
+                                <img [src]="callToAction.icon" class="h-5 w-5 mx-auto" [title]="callToAction.text">
+                                <h5 class="text-xs">
+                                    {{callToAction.channel}}
+                                </h5>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- <div class="md:w-4/12">
+                        <img class="object-right-bottom aspect-video h-full border-1 shadow-md"
+                            [src]="featuredItem.imageSrc">
+                    </div> -->
+                </div>
+
+                <div class="flex flex-wrap md:items-end md:mt-5 hidden">
+                    <div class="md:w-8/12">
+                        <div class="flex items-center gap-3">
+                            <h2 class="font-extrabold text-xl px-0 md:text-2xl">{{featuredItem.title}} </h2>
+                            <span class="text-xs text-blue-700 bg-gray-100 px-2 py-0.5 rounded-full font-bold">
+                                Featured
+                            </span>
+                        </div>
+
+                        <p class="text-md text-slate-600 md:mt-2 pt-0">{{featuredItem.description}}</p>
+
+                        <div class="text-blue-700 mt-2 flex flex-wrap justify-around hover:underline">
+                            <a *ngFor="let callToAction of featuredItem.callToActionLinks" href="{{callToAction.link}}"
+                                class="">
+                                <img [src]="callToAction.icon" class="h-4 w-4 mx-auto">
+                                <h5 class="text-xs">
+                                    {{callToAction.text}}
+                                </h5>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="md:w-4/12">
+                        <img class="object-right-bottom aspect-video h-full border-1 shadow-md"
+                            [src]="featuredItem.imageSrc">
+                    </div>
+                </div>
+                <!-- <hr *ngIf="i == 0" class="mt-4"> -->
+                <!-- <div class="block sm:hidden py-5 underline">
+                </div> -->
+            </div>
+
+            
+
+            <div class="mt-5">
+                <h3 class="text-xl">Blogs and articles</h3>
+                <div class="flex  cursor-pointer bg-yellow-50 border rounded-sm my-3" [routerLink]="['/blogs', blog.id]" *ngFor="let blog of blogs.slice(0,3)">
+                    
+                    <div class="w-8/12 pl-2">
+                        <h1 class="text-blue-900 xs:text-lg md:text-xl lg:text-2xl text-base font-semibold">{{blog.title}}</h1>
+                        <p class="text-slate-800 text-base xs:text-lg md:text-xl py-0 overflow-ellipsis line-clamp-3 xl:line-clamp-none">{{blog.brief}}</p>
+                        <small class="text-xs font-bold text-slate-700 pt-2">Author: {{blog.author}}</small>
+                    </div>
+                    <div class="w-4/12">
+                        <img class="object-center h-full rounded-r-md"
+                            [src]="blog.metaImageURL" onerror="if (this.src != 'assets/images/petro.jpg') this.src = 'assets/images/petro.jpg';">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="grid grid-cols-2 hidden">
+        <div class="">
+            <div class="flex flex-wrap gap-3 mt-2">
+                <div class="flex justify-around  border border-gray-100 rounded-sm" *ngFor="let topic of learn">
+                    <div class="block  p-2 mr-3 ">
+                        <img [src]="topic.image" alt="" class="h-6 w-6 max-w-8 object-center rounded-full">
+                        <h2 class="text-lg text-blue-700">{{topic.title}}</h2>
+                    </div>
+                    <ul class="list-disc">
+                        <li class="text-xs hover:text-blue-700 hover:underline" *ngFor="let section of topic.contents">
+                            <a [href]="section.link">{{section.title}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="">
+            <div class="border-b-2 py-2" *ngFor="let blog of blogs.slice(0,3)">
+                <h1 class="text-blue-700 text-lg font-semibold">{{blog.title}}</h1>
+                <p class="text-slate-700 text-sm">{{blog.brief}}</p>
+                <small class="text-slate-600">Author: {{blog.author}}</small>
+                <small class="text-slate-500 px-3">{{blog.duration}} read</small>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="flex flex-wrap items-end mt-5 hidden">
+        <div class="md:w-4/12 pr-2 pl-4">
+
+        </div>
+
+        <div class="md:w-8/12">
+            <h2 class="text-2xl text-center text-indigo-800  bg-gray-50 py-3">Featured</h2>
+            <div class="flex flex-wrap items-end pt-2">
+                <div class="md:w-6/12 pl-4" *ngFor="let featuredItem of featuredItems.slice(0,2)">
+                    <a href="{{featuredItem.link}}" target="_blank">
+                        <h2 *ngIf="featuredItem.showText">{{featuredItem.title}}</h2>
+                        <img *ngIf="featuredItem.icon" [src]="featuredItem.icon" class="h-10">
+                    </a>
+                    <div class="mt-2  flex flex-col min-w-0 rounded break-words bg-white border-gray-300 border-t-2">
+                        <img class="profile-img object-cover max-h-56" [src]="featuredItem.imageSrc">
+
+
+                        <p class="mt-2">{{featuredItem.description}}</p>
+                    </div>
+                    <div class="links mt-2 flex items-center">
+                        <a *ngFor="let callToAction of featuredItem.callToActionLinks" href="{{callToAction.link}}"
+                            class="w-1/3">
+                            <img [src]="callToAction.icon" class="linkimg">
+                            {{callToAction.text}}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="md:w-8/12">
+            <h2 class="text-2xl text-center text-indigo-800  bg-gray-50 py-3">Featured</h2>
+            <div class=" pl-4 " *ngFor="let featuredItem of featuredItems.slice(0,2)">
+
+                <div class="flex flex-wrap items-center mt-5">
+                    <div class="md:w-7/12">
+                        <h2 class="font-mono font-extrabold text-xl">{{featuredItem.title}}</h2>
+                        <p class="text-base text-gray-600 mt-2">{{featuredItem.description}}</p>
+
+                        <div class="links mt-2 flex items-center">
+                            <a *ngFor="let callToAction of featuredItem.callToActionLinks" href="{{callToAction.link}}"
+                                class="w-1/3">
+                                <img [src]="callToAction.icon" class="linkimg">
+                                {{callToAction.text}}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="md:w-5/12">
+                        <img class="object-cover h-full border-1 shadow-md" [src]="featuredItem.imageSrc">
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>

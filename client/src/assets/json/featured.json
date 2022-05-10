@@ -1,0 +1,25 @@
+[
+    {
+        "title": "Natujenge",
+        "icon": "https://natujenge.ke/assets/images/logo-wordmark.svg",
+        "showText": false,
+        "description": "A platform for people to share their knowledge and experience with each other.",
+        "link": "https://natujenge.ke/",
+        "callToAction": "Join us",
+        "imageSrc": ".../../../assets/images/natujenge-bytes.jpeg",
+        "callToActionLinks": [
+            {
+                "text": "Natujenge YouTube Channel",
+                "icon": "../assets/images/youtube-brands.svg",
+                "link": "https://www.youtube.com/channel/UCJyqTEptQMHh5qo23GpKpQw",
+                "channel":"YouTube"
+            },
+            {
+                "text": "Join Whatsapp Group",
+                "icon": "../assets/images/whatsapp-brands.svg",
+                "link": "https://www.youtube.com/channel/UCJyqTEptQMHh5qo23GpKpQw",
+                "channel":"Whatsapp"
+            }
+        ]
+    }
+]

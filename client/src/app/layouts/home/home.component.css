@@ -1,0 +1,7 @@
+.links img, .link-img {
+    @apply h-7 ;
+}
+
+.links > a{
+    @apply  text-blue-600 hover:underline
+}

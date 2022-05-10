@@ -1,0 +1,35 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    h1 {
+      @apply text-2xl font-medium py-3;
+    }
+    h2 {
+      @apply text-xl py-2;
+    }
+    h3 {
+      @apply text-lg py-1;
+    }
+    a {
+      @apply text-blue-600 underline;
+    }
+    p {
+      @apply text-opacity-90 py-2
+    }
+  }
+
+
+.links img, .link-img {
+    @apply h-7 ;
+}
+
+.links > a{
+    @apply  text-blue-600 hover:underline
+}
+
+.blogs > img {
+  @apply max-h-10 
+}

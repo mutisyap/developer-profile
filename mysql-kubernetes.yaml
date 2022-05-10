@@ -1,0 +1,80 @@
+# MySQL Service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: profile-mysql
+  name: profile-mysql
+  namespace: petro
+spec:
+  type: NodePort
+  ports:
+    - name: "3306"
+      port: 3306
+      targetPort: 3306
+      nodePort: 30308
+      protocol: TCP
+  selector:
+    service: profile-mysql
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  namespace: petro
+  labels:
+    service: profile-mysql
+  name: profile-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: profile-mysql
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        service: profile-mysql
+    spec:
+      volumes:
+        - name: mysqlfiles
+          persistentVolumeClaim:
+            claimName: profilefiles
+      containers:
+        - env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "@SimplePWD1"
+            - name: MYSQL_DATABASE
+              value: profile
+            - name: TZ
+              value: Africa/Nairobi
+          image: mysql:8.0
+          name: profile-mysql
+          ports:
+            - containerPort: 3306
+          resources: {}
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: mysqlfiles
+              mountPath: /var/lib/mysql
+              subPath: mysql
+      restartPolicy: Always
+status: {}
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: profilefiles
+  namespace: petro
+spec:
+  resources:
+    requests:
+      storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: scw-bssd-retain
+
