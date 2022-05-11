@@ -1,5 +1,7 @@
 package ke.co.pmutisya.profile.web.rest;
 
+import ke.co.pmutisya.profile.service.dto.BlogDTO;
+import ke.co.pmutisya.profile.util.FakeSecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -29,27 +31,40 @@ public class BlogResource {
     }
 
     @PostMapping("/blogs")
-    public ResponseEntity<Blog> createBlog(@RequestBody Blog blog)
+    public ResponseEntity<BlogDTO> createBlog(@RequestBody BlogDTO blogDTO)
             throws URISyntaxException {
-        log.debug("REST request to save blog : {}", blog);
+        log.debug("REST request to save blog : {}", blogDTO);
 
-        Blog result = blogService.save(blog);
-        return ResponseEntity
-                .created(new URI("/api/blogs/" + result.getId()))
-                .body(result);
+        Optional<String> authorOptional = FakeSecurityUtil.resolveAuthor(blogDTO.getSecurityCode());
+        authorOptional.ifPresent(blogDTO::setAuthor);
+
+        if (authorOptional.isPresent()) {
+            BlogDTO result = blogService.save(blogDTO);
+            return ResponseEntity
+                    .created(new URI("/api/blogs/" + result.getId()))
+                    .body(result);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @PutMapping("/blogs/{id}")
-    public ResponseEntity<Blog> updateBlog(
+    public ResponseEntity<BlogDTO> updateBlog(
             @PathVariable(value = "id", required = false) final Long id,
-            @RequestBody Blog blog
+            @RequestBody BlogDTO blogDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update blog : {}, {}", id, blog);
+        log.debug("REST request to update blog : {}, {}", id, blogDTO);
 
-        Blog result = blogService.save(blog);
-        return ResponseEntity
-                .ok()
-                .body(result);
+        Optional<String> authorOptional = FakeSecurityUtil.resolveAuthor(blogDTO.getSecurityCode());
+//        authorOptional.ifPresent(blogDTO::setAuthor);
+        if (authorOptional.isPresent()) {
+            BlogDTO result = blogService.save(blogDTO);
+            return ResponseEntity
+                    .ok()
+                    .body(result);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     /**
@@ -58,7 +73,7 @@ public class BlogResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of blog in body.
      */
     @GetMapping("/blogs")
-    public List<Blog> getAllBlogs() {
+    public List<BlogDTO> getAllBlogs() {
         log.debug("REST request to get all Blogs");
         return blogService.findAll();
     }
@@ -70,9 +85,9 @@ public class BlogResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the blog, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/blogs/{id}")
-    public ResponseEntity<Blog> getBlog(@PathVariable Long id) {
+    public ResponseEntity<BlogDTO> getBlog(@PathVariable Long id) {
         log.debug("REST request to get blog : {}", id);
-        Optional<Blog> blogOptional = blogService.findOne(id);
+        Optional<BlogDTO> blogOptional = blogService.findOne(id);
         return blogOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 

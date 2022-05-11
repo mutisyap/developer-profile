@@ -9,30 +9,30 @@
 }
 
 
-::ng-deep h1 {
+::ng-deep .blogs h1 {
     @apply text-2xl font-medium py-2 mt-3 underline underline-offset-4;
 }
 
-::ng-deep p {
+::ng-deep .blogs p {
     @apply text-slate-800 py-2 text-lg leading-relaxed
 }
 
-::ng-deep ul {
+::ng-deep .blogs ul {
     @apply ml-3
 }
 
-::ng-deep li {
+::ng-deep .blogs li {
     @apply list-disc list-inside
 }
 
-::ng-deep pre {
+::ng-deep .blogs pre {
     @apply bg-slate-100 p-2 rounded-sm overflow-auto !important;
 }
 
-::ng-deep code {
+::ng-deep .blogs code {
     @apply text-slate-800 font-mono  !important;
 }
 
-::ng-deep img {
+::ng-deep .blogs img {
     @apply max-h-96 w-4/5 my-4 rounded-lg mx-auto object-cover
 }

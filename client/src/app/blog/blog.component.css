@@ -1,36 +1,31 @@
-p {
-    @apply text-opacity-90 py-2
-}
-
-
 .blog {
     @apply mb-2
 }
 
-::ng-deep h1 {
+::ng-deep .blog h1 {
     @apply text-2xl font-medium py-2 mt-3 underline underline-offset-4;
 }
 
-::ng-deep p {
+::ng-deep .blog  p {
     @apply text-slate-800 py-2 text-lg leading-relaxed
 }
 
-::ng-deep ul {
+::ng-deep .blog  ul {
     @apply ml-3
 }
 
-::ng-deep li {
+::ng-deep .blog  li {
     @apply list-disc list-inside
 }
 
-::ng-deep pre {
+::ng-deep .blog  pre {
     @apply bg-slate-100 p-2 rounded-sm overflow-auto !important;
 }
 
-::ng-deep code {
+::ng-deep .blog  code {
     @apply text-slate-800 font-mono  !important;
 }
 
-::ng-deep img {
+::ng-deep .blog  img {
     @apply max-h-96 w-full my-5 rounded-t-lg mx-auto object-cover
 }

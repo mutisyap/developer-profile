@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { JsonService } from 'src/app/json.service';
 
 declare var require: any;
 
@@ -9,13 +10,21 @@ declare var require: any;
 })
 export class NavbarComponent implements OnInit {
 
-  learn: any = require('../../../assets/json/learn.json');
+  learn!: any[];
 
-  constructor() { }
+  constructor(private jsonService: JsonService) { }
 
   showSidebar = false;
 
   ngOnInit(): void {
+    this.jsonService.getJSONData('learn.json').subscribe(
+      res => {
+        this.learn = res;
+      },
+      err => {
+        this.learn = require('../../../assets/json/learn.json');
+      }
+    )
   }
 
 }

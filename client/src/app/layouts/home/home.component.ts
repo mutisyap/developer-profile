@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ArticleService } from 'src/app/article.service';
+import { JsonService } from 'src/app/json.service';
 import { SeoService } from 'src/app/seo.service';
 
 declare var require: any;
@@ -12,41 +13,45 @@ declare var require: any;
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private articleService: ArticleService, private seo: SeoService) {
+  constructor(private articleService: ArticleService, private seo: SeoService, private jsonService: JsonService) {
     this.seo.setSeoTags('Peter Mutisya - Software Engineer', 'What needs to be done must be done by we who are', 'assets/images/petro.jpg', true);
   }
 
-  projectList: any = require('../../../assets/json/projects.json');
-  skillList: any = require('../../../assets/json/skills.json');
-  featuredItems: any = require('../../../assets/json/featured.json');
-  about: any = require('../../../assets/json/about.json');
-  learn: any = require('../../../assets/json/learn.json');
+  projectList: any = []; // require('../../../assets/json/projects.json');
+  skillList: any = []; //require('../../../assets/json/skills.json');
+  featuredItems: any = []; //  = require('../../../assets/json/featured.json');
+  about: any = []; //  require('../../../assets/json/about.json');
+  learn: any = []; // require('../../../assets/json/learn.json');
   blogs: any[] = []; // = require('../../../assets/json/blogs.json');
 
-
-  featuredItem = {
-    title: "Natujenge",
-    icon: "https://natujenge.ke/assets/images/logo-wordmark.svg",
-    showText: false,
-    description: 'A platform for people to share their knowledge and experience with each other.',
-    link: 'https://natujenge.ke/',
-    callToAction: 'Join us',
-    imageSrc: ".../../../assets/love-the-bytes.png",
-    callToActionLinks: [
-      {
-        'text': 'Follow',
-        'icon': '../assets/youtube-brands.svg',
-        'link': 'https://www.youtube.com/channel/UCJyqTEptQMHh5qo23GpKpQw'
-      },
-      {
-        'text': 'Join Us',
-        'icon': '../assets/whatsapp-brands.svg',
-        'link': 'https://www.youtube.com/channel/UCJyqTEptQMHh5qo23GpKpQw'
-      },
-    ]
-  };
-
   ngOnInit(): void {
+    this.jsonService.getJSONData('featured.json').subscribe(
+      res => {
+        this.featuredItems = res;
+      },
+      err => {
+        this.featuredItems = require('../../../assets/json/featured.json');
+      }
+    )
+
+    this.jsonService.getJSONData('about.json').subscribe(
+      res => {
+        this.about = res;
+      },
+      err => {
+        this.about = require('../../../assets/json/about.json');
+      }
+    )
+
+    this.jsonService.getJSONData('learn.json').subscribe(
+      res => {
+        this.learn = res;
+      },
+      err => {
+        this.learn = require('../../../assets/json/learn.json');
+      }
+    )
+
     this.articleService.getArticles().subscribe(
       result => {
         this.blogs = result;

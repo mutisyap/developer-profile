@@ -4,7 +4,7 @@ logging:
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://localhost:3308/profile?useUnicode=true&characterEncoding=utf8&useSSL=false
     username: root
     password: '@SimplePWD1'
     hikari:

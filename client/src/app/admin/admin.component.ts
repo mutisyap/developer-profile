@@ -21,22 +21,27 @@ export class AdminComponent implements OnInit {
     success: "",
     error: ""
   };
+  searchText = '';
 
   article: any = {
+    id: '',
     title: '',
     brief: '',
     article: '',
-    author: 'Peter Mutisya',
+    securityCode: '',
     articleHTML: undefined,
-    metaImageURL: undefined
+    metaImageURL: undefined,
+    tags: ''
   }
 
   articleForm = this.formBuilder.group({
+    id: [undefined],
     title: ['',],
     brief: [''],
     article: ['# Heading1\n ## Heading 2\n Image: ![Not Peter](https://eulu.co.ke/uploads/1d1dc999af144cc3bb5d6f2f5c363149.jpeg)'],
-    author: ['Peter Mutisya'],
-    metaImageURL: ['']
+    securityCode: [''],
+    metaImageURL: [''],
+    tags: ['']
   })
 
   markedOptions = {
@@ -49,7 +54,8 @@ export class AdminComponent implements OnInit {
 
   adminAction = 'manage';
 
-  blogs: any = [];
+  blogs: any[] = [];
+  displayedBlogs: any[] = [];
 
   ngOnInit(): void {
     this.articleService.getArticles().subscribe(
@@ -68,6 +74,8 @@ export class AdminComponent implements OnInit {
           }
 
         });
+
+        this.searchArticles();
       }
     )
   }
@@ -83,7 +91,9 @@ export class AdminComponent implements OnInit {
         title: this.articleForm.get(['title'])!.value,
         brief: this.articleForm.get(['brief'])!.value,
         article: this.articleForm.get(['article'])!.value,
-        author: this.articleForm.get(['author'])!.value,
+        securityCode: this.articleForm.get(['securityCode'])!.value,
+        tags: this.articleForm.get(['tags'])!.value,
+        tagList: this.articleForm.get(['tags'])!.value.split(","),
         articleHTML: this.markdownService.compile(this.articleForm.get(['article'])!.value, true, false,
           { breaks: true, gfm: true, pedantic: false, smartLists: true, smartypants: true }
         ),
@@ -96,15 +106,19 @@ export class AdminComponent implements OnInit {
   saveArticle(): void {
 
     const article = {
+      id: this.articleForm.get(['id'])!.value,
       title: this.articleForm.get(['title'])!.value,
       brief: this.articleForm.get(['brief'])!.value,
       articleMd: this.articleForm.get(['article'])!.value,
-      author: this.articleForm.get(['author'])!.value,
+      securityCode: this.articleForm.get(['securityCode'])!.value,
+      tags: this.articleForm.get(['tags'])!.value,
       metaImageURL: this.articleForm.get(['metaImageURL'])!.value
     }
     this.articleService.createArticle(article).subscribe(
       result => {
         console.log('Successfully created blog: ', result)
+        this.previewMode = false;
+        this.adminAction ='manage';
       }
     )
   }
@@ -114,6 +128,26 @@ export class AdminComponent implements OnInit {
 
     this.resourcesErrorMessage.error = "";
     this.resourcesErrorMessage.success = "";
+  }
+
+  beginEdit(articleId: number): void {
+    // set up form
+    this.blogs.forEach((blog: any) => {
+      if (blog.id === articleId) {
+        this.articleForm.patchValue({
+          id: blog.id,
+          title: blog.title,
+          brief: blog.brief,
+          article: blog.articleMd,
+          securityCode: [''],
+          metaImageURL: blog.metaImageURL,
+          tags: blog.tags
+        })
+      }
+    });
+
+    this.adminAction = 'write';
+    this.previewMode = false;
   }
 
   addResourceFile(event: any) {
@@ -153,9 +187,22 @@ export class AdminComponent implements OnInit {
         this.resourcesErrorMessage.error = error.message;
       }
     )
+  }
 
-
-
+  searchArticles(): void {
+    console.log('Beginning search');
+    this.displayedBlogs = [];
+    this.blogs.forEach((blog: any) => {
+      if (blog.title?.toLowerCase().indexOf(this.searchText.toLowerCase()) >= 0 ||
+        blog.brief?.toLowerCase().indexOf(this.searchText.toLowerCase()) >= 0 ||
+        blog.article?.toLowerCase().indexOf(this.searchText.toLowerCase()) >= 0 ||
+        blog.tags?.toLowerCase().indexOf(this.searchText.toLowerCase()) >= 0 ||
+        blog.author?.toLowerCase().indexOf(this.searchText.toLowerCase()) >= 0
+      ) {
+        console.log('found match for text : ', this.searchText)
+        this.displayedBlogs.push(blog);
+      }
+    })
   }
 
   clearFileInput(ctrl: any) {

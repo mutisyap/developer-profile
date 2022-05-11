@@ -23,15 +23,24 @@ import java.util.UUID;
 public class UploadResource {
     private static final String resourcesFolder = "/apps/media";
     @PostMapping("/upload")
-    public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file,
+                                                          @RequestParam (required = false) Boolean randomName) throws IOException {
+        if (randomName == null){
+            randomName = false;
+        }
       log.debug("REST request to upload file");
 
 //        Path directory = Paths.get(resourcesFolder);
 //        Files.createDirectories(directory);
-        String newFilename = UUID.randomUUID().toString().replace("-", "");
+        String newFilename;
+        if (randomName) {
+             newFilename = UUID.randomUUID().toString().replace("-", "");
 
-        String fileExtension = getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
-        newFilename = newFilename + "." + fileExtension;
+            String fileExtension = getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
+            newFilename = newFilename + "." + fileExtension;
+        } else {
+            newFilename = Objects.requireNonNull(file.getOriginalFilename()).replace(' ', '-');
+        }
 
         Objects.requireNonNull(file.getOriginalFilename());
         try (BufferedOutputStream outputStream = new BufferedOutputStream(

@@ -1,11 +1,13 @@
 package ke.co.pmutisya.profile.service;
 
+import ke.co.pmutisya.profile.domain.Blog;
+import ke.co.pmutisya.profile.repository.BlogRepository;
+import ke.co.pmutisya.profile.service.dto.BlogDTO;
+import ke.co.pmutisya.profile.service.mapper.BlogMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ke.co.pmutisya.profile.domain.Blog;
-import ke.co.pmutisya.profile.repository.BlogRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,20 +23,27 @@ public class BlogService {
 
     private final BlogRepository blogRepository;
 
+    private final BlogMapper blogMapper;
 
-    public BlogService(BlogRepository blogRepository) {
+
+    public BlogService(BlogRepository blogRepository, BlogMapper blogMapper) {
         this.blogRepository = blogRepository;
+        this.blogMapper = blogMapper;
     }
 
     /**
      * Save a blog.
      *
-     * @param blog the blog to save.
+     * @param blogDTO the blog to save.
      * @return the persisted blog.
      */
-    public Blog save(Blog blog) {
-        log.debug("Request to save blog : {}", blog);
-        return blogRepository.save(blog);
+    public BlogDTO save(BlogDTO blogDTO) {
+        log.debug("Request to save blog : {}", blogDTO);
+
+        Blog blog = blogMapper.toEntity(blogDTO);
+        blog = blogRepository.save(blog);
+
+        return blogMapper.toDto(blog);
     }
 
 
@@ -44,9 +53,9 @@ public class BlogService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<Blog> findAll() {
+    public List<BlogDTO> findAll() {
         log.debug("Request to get all blogs");
-        return blogRepository.findAll();
+        return blogMapper.toDto(blogRepository.findAll());
     }
 
     /**
@@ -56,9 +65,9 @@ public class BlogService {
      * @return the blog.
      */
     @Transactional(readOnly = true)
-    public Optional<Blog> findOne(Long id) {
+    public Optional<BlogDTO> findOne(Long id) {
         log.debug("Request to get blog : {}", id);
-        return blogRepository.findById(id);
+        return blogRepository.findById(id).map(blogMapper::toDto);
     }
 
     /**
